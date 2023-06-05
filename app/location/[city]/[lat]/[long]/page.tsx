@@ -1,14 +1,12 @@
-import { getClient } from '@/apollo.client';
 import CallOutCard from '@/components/CallOutCard';
 import InformationPanel from '@/components/InformationPanel';
 import StatCard from '@/components/StatCard';
-import fetchWeatherQuery from '@/graphql/queries/fetchWeatherQueries';
 import React from 'react'
 import {TempChart} from "@/components/TempChart";
 import {RainChart} from "@/components/RainChart";
 import {HumidityChart} from "@/components/HumidityChart";
-import getBasePath from "@/lib/getBasePath";
 import cleanData from "@/lib/cleanData";
+
 export const revalidate=60;
 
 type Props = {
@@ -20,33 +18,23 @@ type Props = {
 }
 
 async function WeatherPage({ params: { city, lat, long } }: Props) {
-    const client = getClient();
-    const { data } = await client.query({
-        query: fetchWeatherQuery,
-        variables: {
-            current_weather: "true",
-            longitude: long,
-            latitude: lat,
-            timezone: "GMT"
-        }
-    });
 
-    const results: Root = data.myQuery;
+    const data = await fetch(`https://chip-weather-api.onrender.com/api/vi/weather-app/${long}/${lat}`);
+    const results: Root = await data.json();
+
     const dataToSend = cleanData(results, city);
 
-    const res = await fetch(`${getBasePath}/api/getWeatherSummary`,{
+    const response = await fetch(`https://chip-weather-api.onrender.com/api/vi/weather-app`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json",
         },
-        body: JSON.stringify({
-            weatherData: dataToSend
-        })
+        body: JSON.stringify(dataToSend),
     });
 
-    const GPTData = await res.json();
+    const GPTData = await response.json();
     const {content} = GPTData;
-
+    console.log(JSON.stringify(dataToSend))
     return (
         <div className='flex flex-col min-h-screen md:flex-row'>
             <InformationPanel

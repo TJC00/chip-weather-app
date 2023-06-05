@@ -14,7 +14,7 @@ export const RainChart = ({results}:Props) => {
 
     const data = hourly.map((hour, i)=>({
         time:Number(hour),
-        "Rain Percentage":results.hourly.precipitation_probability[i],
+        "Rain {%}":results.hourly.precipitation_probability[i],
     }))
 
     const dataFormatter = (number:number)=>`${number} %`

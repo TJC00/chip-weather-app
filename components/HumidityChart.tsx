@@ -14,7 +14,7 @@ export const HumidityChart = ({results}:Props) => {
 
     const data = hourly.map((hour, i)=>({
         time:Number(hour),
-        "Humidity Percentage":results.hourly.relativehumidity_2m[i],
+        "Humidity {%}":results.hourly.relativehumidity_2m[i],
     }))
 
     const dataFormatter = (number:number)=>`${number} %`
